@@ -13,7 +13,7 @@ import piglet.piglet2spiglet.*;
  */
 public class Piglet2Spiglet extends GJDepthFirst<String,String> {
 
-   private boolean isMOVE = false;
+   private boolean isMOVE = false, allowInteger = false;
 	
    /*
     * 修改遍历的部分
@@ -162,6 +162,7 @@ public class Piglet2Spiglet extends GJDepthFirst<String,String> {
     * f1 -> Exp()
     */
    public String visit(PrintStmt n, String argu) {
+      allowInteger = true;
       return "PRINT " + n.f1.accept(this, argu);
    }
 
@@ -180,6 +181,11 @@ public class Piglet2Spiglet extends GJDepthFirst<String,String> {
 		  isMOVE = false;
 		  return n.f0.accept(this, argu);
 	  }
+	  if(n.f0.which == 5 && allowInteger) {
+         allowInteger = false;
+	     return n.f0.accept(this, argu);
+      }
+      allowInteger = false;
 	  if(n.f0.which == 4) return n.f0.accept(this, argu);
 	  
 	  //需要展开表达式
@@ -198,6 +204,7 @@ public class Piglet2Spiglet extends GJDepthFirst<String,String> {
     */
    public String visit(StmtExp n, String argu) {
       n.f1.accept(this, argu);
+      allowInteger = true;
       return n.f3.accept(this, argu);
    }
 
@@ -209,7 +216,10 @@ public class Piglet2Spiglet extends GJDepthFirst<String,String> {
     * f4 -> ")"
     */
    public String visit(Call n, String argu) {
-      return "CALL " + n.f1.accept(this, argu) + "( " + n.f3.accept(this, argu) + ")";
+      allowInteger = true;
+      String _ret = "CALL " + n.f1.accept(this, argu);
+      allowInteger = true;
+      return _ret + "( " + n.f3.accept(this, argu) + ")";
    }
 
    /**
@@ -217,6 +227,7 @@ public class Piglet2Spiglet extends GJDepthFirst<String,String> {
     * f1 -> Exp()
     */
    public String visit(HAllocate n, String argu) {
+      allowInteger = true;
       return "HALLOCATE " + n.f1.accept(this, argu);
    }
 
@@ -226,7 +237,10 @@ public class Piglet2Spiglet extends GJDepthFirst<String,String> {
     * f2 -> Exp()
     */
    public String visit(BinOp n, String argu) {
-	  return n.f0.accept(this, argu) + n.f1.accept(this, argu) + n.f2.accept(this, argu);
+      String curOp = n.f0.accept(this, argu);
+      String _ret = curOp + n.f1.accept(this, argu);
+      if(curOp.equals("LT ") || curOp.equals("PLUS ")) allowInteger = true;
+      return _ret + n.f2.accept(this, argu);
    }
 
    /**
