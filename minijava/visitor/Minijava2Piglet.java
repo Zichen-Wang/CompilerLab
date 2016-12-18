@@ -503,7 +503,7 @@ public class Minijava2Piglet extends GJDepthFirst<AllType,AllType> {
 	  //t1保存数组首地址，t2先是下标索引，然后计算地址，最后取出来值返回
 	  /*
 	   * MOVE TEMP t2 EXP1
-	   * MOVE TEMP t2 PLUS TEMP t1 TIMES 4 PLUS 1 TEMP t2
+	   * MOVE TEMP t2 PLUS TEMP t1 TIMES PLUS TEMP t2 1 4
 	   * HSTORE TEMP t2 0 EXP2
 	   */
 	  int t2 = curTmpNum++; //保存返回表达式的值，作数组下标索引
@@ -512,7 +512,7 @@ public class Minijava2Piglet extends GJDepthFirst<AllType,AllType> {
       PrintPiglet.println("");
       //现在计算 TEMP t2 = TEMP t1 + (TEMP t2 + 1) * 4
       //MOVE TEMP t2 PLUS TEMP t2 TIMES 4 PLUS 1 TEMP t2
-      PrintPiglet.println("MOVE TEMP " + t2 + " PLUS TEMP " + t1 + " TIMES 4 PLUS 1 TEMP " + t2);
+      PrintPiglet.println("MOVE TEMP " + t2 + " PLUS TEMP " + t1 + " TIMES PLUS TEMP " + t2 + " 1  4");
       PrintPiglet.print("HSTORE TEMP " + t2 + " 0 ");
       n.f5.accept(this, argu);
       PrintPiglet.println("");
@@ -639,7 +639,8 @@ public class Minijava2Piglet extends GJDepthFirst<AllType,AllType> {
 	   *  	MOVE TEMP t1 1
 	   *  	JUMP L2
 	   *  	L1 MOVE TEMP t1 0
-	   *  	L2 RETURN TEMP t1
+	   *  	L2 NOOP
+	   *  	RETURN TEMP t1
 	   *  END
 	   */
 	  int t1 = curTmpNum++, L1 = curLableNum++, L2 = curLableNum++;
@@ -651,6 +652,7 @@ public class Minijava2Piglet extends GJDepthFirst<AllType,AllType> {
 	  PrintPiglet.print("MOVE TEMP " + t1 + " ");
 	  n.f2.accept(this, argu);
 	  PrintPiglet.println("");
+	  PrintPiglet.println("CJUMP TEMP " + t1 + " L" + L1);
 	  PrintPiglet.println("MOVE TEMP " + t1 + " 1");
 	  PrintPiglet.println("JUMP L" + L2);
 	  PrintPiglet.println("L" + L1 + " MOVE TEMP " + t1 + " 0");
@@ -737,7 +739,7 @@ public class Minijava2Piglet extends GJDepthFirst<AllType,AllType> {
 	   * BEGIN
 	   * 	MOVE TEMP t1 EXP1
 	   * 	MOVE TEMP t2 EXP2
-	   * 	MOVE TEMP t2 PLUS TEMP t1 TIMES 4 PLUS 1 TEMP t2
+	   * 	MOVE TEMP t2 PLUS TEMP t1 TIMES PLUS TEMP t2 1 4
 	   * 	HLOAD TEMP t2 TEMP t2 0
 	   * 	RETURN TEMP t2
 	   * END
@@ -750,7 +752,7 @@ public class Minijava2Piglet extends GJDepthFirst<AllType,AllType> {
       PrintPiglet.print("MOVE TEMP " + t2 + " ");
       n.f2.accept(this, argu);
       PrintPiglet.println("");
-      PrintPiglet.println("MOVE TEMP " + t2 + " PLUS TEMP " + t1 + " TIMES 4 PLUS 1 TEMP " + t2);
+      PrintPiglet.println("MOVE TEMP " + t2 + " PLUS TEMP " + t1 + " TIMES PLUS TEMP " + t2 + " 1 4");
       PrintPiglet.println("HLOAD TEMP " + t2 + " TEMP " + t2 + " 0");
       PrintPiglet.pReturn();
       PrintPiglet.println("TEMP " + t2);
@@ -1004,7 +1006,7 @@ public class Minijava2Piglet extends GJDepthFirst<AllType,AllType> {
 	  /*
 	   * BEGIN
 	   * 	MOVE TEMP t1 EXP
-	   * 	MOVE TEMP t2 HALLOCATE TIMES 4 PLUS 1 TEMP t1
+	   * 	MOVE TEMP t2 HALLOCATE TIMES PLUS TEMP t1 1 4
 	   * 	HSTORE TEMP t2 0 TEMP t1
 	   * 	RETURN TEMP t2
 	   * END
@@ -1014,7 +1016,7 @@ public class Minijava2Piglet extends GJDepthFirst<AllType,AllType> {
 	  PrintPiglet.print("MOVE TEMP " + t1 + " ");
       n.f3.accept(this, argu);
       PrintPiglet.println("");
-      PrintPiglet.println("MOVE TEMP " + t2 + " HALLOCATE TIMES 4 PLUS 1 TEMP " + t1);
+      PrintPiglet.println("MOVE TEMP " + t2 + " HALLOCATE TIMES PLUS TEMP " + t1 + " 1 4");
       PrintPiglet.println("HSTORE TEMP " + t2 + " 0 TEMP " + t1);
       PrintPiglet.pReturn();
       PrintPiglet.println("TEMP " + t2);
