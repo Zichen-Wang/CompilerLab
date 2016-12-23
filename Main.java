@@ -36,8 +36,7 @@ public class Main {
                     System.out.println("Type error");
                     PrintErrorMsg.printError();
                 } else {
-                    FileOutputStream outFile = null;
-                    outFile = new FileOutputStream(fileName + ".pg");
+                    FileOutputStream outFile = new FileOutputStream(fileName + ".pg");
                     System.setOut(new PrintStream(outFile));
                     rootJava.accept(new Minijava2Piglet(), myClasses);
 

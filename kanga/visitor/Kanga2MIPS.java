@@ -26,7 +26,7 @@ public class Kanga2MIPS extends GJDepthFirst<String,String> {
 
 
     //f0 -> ( ( Label() )? Stmt() )*的时候用，打印label
-    public String visit(kanga.syntaxtree.NodeOptional n, String argu) {
+    public String visit(NodeOptional n, String argu) {
         if ( n.present() )
             PrintMIPS.print(n.node.accept(this,argu) + ":");
         return null;
