@@ -96,7 +96,7 @@ public class Minijava2Piglet extends GJDepthFirst<AllType,AllType> {
 					curMethodList.add(classList.get(i).getName() + "_" + curMethodName);
 				}
 				else {
-					curMethodList.set(i, classList.get(i).getName() + "_" + curMethodName);
+					curMethodList.set(x, classList.get(i).getName() + "_" + curMethodName);
 				}
 			}
 		}
